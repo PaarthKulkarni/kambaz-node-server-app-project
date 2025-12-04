@@ -4,9 +4,12 @@ import model from "../Courses/model.js";
 
 export default function ModulesDao(db) {
 
-    function deleteModule(moduleId) {
-  const { modules } = db;
-  db.modules = modules.filter((module) => module._id !== moduleId);
+async function deleteModule(courseId, moduleId) {
+   const status = await model.updateOne(
+     { _id: courseId },
+     { $pull: { modules: { _id: moduleId } } }
+   );
+   return status;
 }
 
  async function findModulesForCourse(courseId) {
@@ -36,9 +39,4 @@ async function updateModule(courseId, moduleId, moduleUpdates) {
    updateModule,
    deleteModule,
  };
-
-
-
-
-
 }

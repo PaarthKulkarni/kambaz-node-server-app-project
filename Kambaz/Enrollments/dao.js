@@ -1,8 +1,5 @@
 import model from "./model.js";
-export async function findCoursesForUser(userId) {
- const enrollments = await model.find({ user: userId }).populate("course");
- return enrollments.map((enrollment) => enrollment.course);
-}
+
 
 export default function EnrollmentsDao() {
  async function findCoursesForUser(userId) {
@@ -14,7 +11,10 @@ export default function EnrollmentsDao() {
    return enrollments.map((enrollment) => enrollment.user);
  }
 
-
+async function findCoursesForUser(userId) {
+ const enrollments = await model.find({ user: userId }).populate("course");
+ return enrollments.map((enrollment) => enrollment.course);
+}
  function enrollUserInCourse(userId, courseId) {
   return model.create({
     user: userId,
@@ -36,6 +36,7 @@ export default function EnrollmentsDao() {
   const enrollments = await model.find({ user: userId });
   return enrollments;
 }
+
 
  return {
    findCoursesForUser,

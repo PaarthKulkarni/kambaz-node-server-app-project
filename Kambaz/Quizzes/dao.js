@@ -3,7 +3,7 @@ import model from "./model.js";
 
 export default function QuizzesDao() {
   function deleteQuiz(quizId) {
-    return model.deleteOne({ _id: quizId })
+    return model.deleteOne({ _id: quizId });
   }
 
   function findQuizzesForCourse(courseId) {
@@ -19,10 +19,20 @@ export default function QuizzesDao() {
     return model.updateOne({ _id: quizId }, { $set: quizUpdates });
   }
 
+  function findQuizById(quizId) {
+    return model.findOne({ _id: quizId });
+  }
+
+  function findAllQuizzes() {
+    return model.find({});
+  }
+
   return {
     findQuizzesForCourse,
     createQuiz,
     updateQuiz,
     deleteQuiz,
+    findQuizById,
+    findAllQuizzes,
   };
 }

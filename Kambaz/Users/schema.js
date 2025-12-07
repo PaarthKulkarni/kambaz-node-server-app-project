@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
-const userSchema = new mongoose.Schema({
+const userSchema = new mongoose.Schema(
+  {
     _id: String,
     username: { type: String, required: true, unique: true },
     password: { type: String, required: true },
@@ -9,7 +10,7 @@ const userSchema = new mongoose.Schema({
     dob: Date,
     role: {
       type: String,
-      enum: ["STUDENT", "FACULTY", "ADMIN", "USER"],
+      enum: ["STUDENT", "FACULTY", "ADMIN", "USER", "TA"],
       default: "USER",
     },
     loginId: String,

@@ -11,7 +11,7 @@ export default function QuizzesDao() {
   }
 
   function createQuiz(quiz) {
-    const newQuiz = { ...quiz, _id: uuidv4(), questions: [] };
+    const newQuiz = { ...quiz, _id: uuidv4(), questions: quiz.questions || [] };
     return model.create(newQuiz);
   }
 

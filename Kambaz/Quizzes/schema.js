@@ -16,6 +16,10 @@ const questionSchema = new mongoose.Schema({
   }],
   correctAnswer: Boolean,//T&F
   possibleAnswers: [String],//FIB
+    blanks: [{  // ADD THIS - FIB new format for multiple blanks
+        id: String,
+        possibleAnswers: [String]
+    }]
 });
 
 const quizSchema = new mongoose.Schema(

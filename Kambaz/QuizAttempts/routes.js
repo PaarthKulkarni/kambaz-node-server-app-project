@@ -108,22 +108,43 @@ export default function QuizAttemptsRoutes(app) {
       let score = 0;
       let totalPoints = 0;
 
+      // First, calculate total points from ALL questions (including unanswered ones)
+      quiz.questions.forEach((question) => {
+        totalPoints += question.points || 0;
+      });
+
       const answersWithCorrectness = answers.map((answer) => {
         const question = quiz.questions.find(
           (q) => q._id === answer.questionId
         );
         if (!question) return answer;
 
-        totalPoints += question.points || 0;
         let isCorrect = false;
 
-        if (question.type === "MULTIPLE_CHOICE") {
-          const correctChoice = question.choices.find((c) => c.isCorrect);
-          isCorrect = answer.selectedAnswer === correctChoice.text;
+        if (question.type === "SINGLE_CHOICE" || question.type === "MULTIPLE_CHOICE") {
+          if (question.type === "SINGLE_CHOICE") {
+            const correctChoice = question.choices.find((c) => c.isCorrect);
+            isCorrect = answer.selectedAnswer === correctChoice?.text;
+          } else {
+            // MULTIPLE_CHOICE: check if all selected answers are correct
+            const selectedAnswers = Array.isArray(answer.selectedAnswer) 
+              ? answer.selectedAnswer 
+              : [answer.selectedAnswer];
+            const correctChoices = question.choices
+              .filter((c) => c.isCorrect)
+              .map((c) => c.text);
+            isCorrect = selectedAnswers.length === correctChoices.length &&
+              selectedAnswers.every((ans) => correctChoices.includes(ans));
+          }
         } else if (question.type === "TRUE_FALSE") {
           isCorrect = answer.selectedAnswer === question.correctAnswer;
         } else if (question.type === "FILL_IN_BLANK") {
-          isCorrect = question.possibleAnswers.some(
+          // Support both old format (possibleAnswers) and new format (blanks)
+          const possibleAnswers = question.blanks
+            ? question.blanks.flatMap((blank) => blank.possibleAnswers || [])
+            : (question.possibleAnswers || []);
+          
+          isCorrect = possibleAnswers.some(
             (possibleAnswer) =>
               possibleAnswer.toLowerCase() ===
               answer.selectedAnswer.toLowerCase()
